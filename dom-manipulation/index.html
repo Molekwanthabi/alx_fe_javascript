@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Quote Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #quoteDisplay {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        #addQuoteForm {
+            margin-top: 20px;
+        }
+
+        #addQuoteForm input {
+            margin-right: 10px;
+        }
+
+        #importExportSection, #filterSection, #syncSection {
+            margin-top: 20px;
+        }
+
+        #notification {
+            margin-top: 10px;
+            padding: 5px;
+            border: 1px solid #aaa;
+            background-color: #eee;
+            display: none; /* Initially hidden */
+        }
+    </style>
+</head>
+<body>
+    <h1>Dynamic Quote Generator</h1>
+
+    <div id="filterSection">
+        <label for="categoryFilter">Filter by Category:</label>
+        <select id="categoryFilter">
+            <option value="all">All Categories</option>
+            <!-- Categories will be dynamically populated here -->
+        </select>
+    </div>
+
+    <div id="quoteDisplay">Click "Show New Quote" to see a quote!</div>
+    <button id="newQuote">Show New Quote</button>
+
+    <div id="addQuoteForm">
+        <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
+        <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+        <button id="addQuoteBtn">Add Quote</button>
+    </div>
+
+    <div id="importExportSection">
+        <button id="exportQuotesBtn">Export Quotes to JSON</button>
+        <input type="file" id="importFile" accept=".json"/>
+    </div>
+
+     <div id="syncSection">
+        <button id="syncQuotesBtn">Sync with Server</button>
+    </div>
+
+    <div id="notification"></div>
+
+</body>
+</html>
