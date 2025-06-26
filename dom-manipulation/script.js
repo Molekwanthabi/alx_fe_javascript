@@ -249,6 +249,13 @@ filterQuotes();
 
 // Set up periodic data syncing
 setInterval(syncData, SYNC_INTERVAL);
-      
-       
+
+
+
+
+
+   
+                   
+    
+
                        
