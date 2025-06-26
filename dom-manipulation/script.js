@@ -1,7 +1,7 @@
 // script.js
 
 let quotes = [];
-let categories = new Set(); // Use a Set to store unique categories
+let categories = new Set();
 
 const quoteDisplay = document.getElementById('quoteDisplay');
 const quoteTextElement = document.getElementById('quoteText');
@@ -12,22 +12,18 @@ const newQuoteCategoryInput = document.getElementById('newQuoteCategory');
 const exportQuotesButton = document.getElementById('exportQuotes');
 const importFile = document.getElementById('importFile');
 const categoryFilter = document.getElementById('categoryFilter');
-const notificationElement = document.getElementById('notification'); // Get notification element
+const notificationElement = document.getElementById('notification');
 
-const SYNC_INTERVAL = 5000; // 5 seconds - Adjust as needed
+const SYNC_INTERVAL = 5000;
 
 // Function to show notifications
 function showNotification(message) {
     notificationElement.textContent = message;
     notificationElement.style.display = 'block';
-
-    // Hide notification after 3 seconds
     setTimeout(() => {
         notificationElement.style.display = 'none';
     }, 3000);
 }
-
-
 
 // Function to save quotes to local storage
 function saveQuotes() {
@@ -49,9 +45,8 @@ function saveLastSelectedCategory(category) {
 
 // Function to load the last selected category from local storage
 function loadLastSelectedCategory() {
-    return localStorage.getItem('lastSelectedCategory') || 'all'; // Default to 'all' if nothing is stored
+    return localStorage.getItem('lastSelectedCategory') || 'all';
 }
-
 
 function showRandomQuote(filteredQuotes = quotes) {
     if (filteredQuotes.length === 0) {
@@ -64,8 +59,10 @@ function showRandomQuote(filteredQuotes = quotes) {
     const quote = filteredQuotes[randomIndex];
     quoteTextElement.textContent = quote.text;
     quoteCategoryElement.textContent = `- ${quote.category}`;
-}
 
+    //Session storage example, last viewed quote
+    sessionStorage.setItem("lastQuote", JSON.stringify(quote));
+}
 
 function addQuote() {
     const text = newQuoteTextInput.value.trim();
@@ -73,18 +70,17 @@ function addQuote() {
 
     if (text !== "" && category !== "") {
         quotes.push({ text: text, category: category });
-        categories.add(category); // Add new category to the Set
+        categories.add(category);
         saveQuotes();
-        populateCategories(); // Update the category filter dropdown
+        populateCategories();
         newQuoteTextInput.value = "";
         newQuoteCategoryInput.value = "";
-        filterQuotes(); // Apply the filter after adding the quote
-        syncData(); // Sync data after adding a quote
+        filterQuotes();
+        syncData();
     } else {
         alert("Please enter both quote and category.");
     }
 }
-
 
 function exportToJsonFile() {
     const jsonString = JSON.stringify(quotes);
@@ -108,13 +104,12 @@ function importFromJsonFile(event) {
                 const importedQuotes = JSON.parse(event.target.result);
                 if (Array.isArray(importedQuotes)) {
                     quotes.push(...importedQuotes);
-                    importedQuotes.forEach(quote => categories.add(quote.category));  // Add new categories
+                    importedQuotes.forEach(quote => categories.add(quote.category));
                     saveQuotes();
                     populateCategories();
-                    filterQuotes(); //Apply filter after import
-                     syncData(); //Sync data after importing
+                    filterQuotes();
+                    syncData();
                     alert('Quotes imported successfully!');
-
                 } else {
                     alert("Invalid JSON format: Expected an array of quotes.");
                 }
@@ -130,16 +125,13 @@ function importFromJsonFile(event) {
 }
 
 function populateCategories() {
-    // Clear existing options except for the default "All Categories"
     while (categoryFilter.options.length > 1) {
         categoryFilter.remove(1);
     }
 
-    //Repopulate the `categories` set based on the quotes array
     categories.clear();
     quotes.forEach(quote => categories.add(quote.category));
 
-    // Add categories to the dropdown
     categories.forEach(category => {
         const option = document.createElement('option');
         option.value = category;
@@ -148,11 +140,9 @@ function populateCategories() {
     });
 }
 
-
-
 function filterQuotes() {
     const selectedCategory = categoryFilter.value;
-    saveLastSelectedCategory(selectedCategory); // Save the selected category
+    saveLastSelectedCategory(selectedCategory);
 
     let filteredQuotes = [];
 
@@ -162,27 +152,11 @@ function filterQuotes() {
         filteredQuotes = quotes.filter(quote => quote.category === selectedCategory);
     }
 
-    showRandomQuote(filteredQuotes); // Show random quote from filtered list
+    showRandomQuote(filteredQuotes);
 }
-
-
-newQuoteButton.addEventListener('click', function() {
-    filterQuotes();
-    showRandomQuote();
-});
-exportQuotesButton.addEventListener('click', exportToJsonFile);
-
 
 // Function to simulate fetching data from server
 function fetchServerData() {
-    // In a real app, this would be an API call:
-    // fetch('/api/quotes')
-    //   .then(response => response.json())
-    //   .then(serverQuotes => {
-    //     return serverQuotes;
-    //   });
-
-    //Simulate server data.  In a real application, this server data would be unique
     const serverQuotesJSON = localStorage.getItem('serverQuotes');
     let serverQuotes = [];
 
@@ -198,23 +172,12 @@ function fetchServerData() {
     }
 
     return serverQuotes;
-
-
 }
 
 // Function to simulate saving data to the server
 function saveServerData(data) {
-    // In a real app, this would be an API call:
-    // fetch('/api/quotes', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(data)
-    // });
-
-     localStorage.setItem('serverQuotes', JSON.stringify(data));
-
+    localStorage.setItem('serverQuotes', JSON.stringify(data));
 }
-
 
 // Function to sync data with the server
 function syncData() {
@@ -222,19 +185,21 @@ function syncData() {
 
     // Conflict resolution: Server data takes precedence
     if (serverQuotes && serverQuotes.length > quotes.length) {
-        quotes = serverQuotes; // Override local data with server data
+        quotes = serverQuotes;
         saveQuotes();
         populateCategories();
         filterQuotes();
         showNotification('Quotes updated from server.');
     } else {
-         saveServerData(quotes); //Push the current quotes to the "server"
-
+        saveServerData(quotes);
     }
-
 }
 
-
+newQuoteButton.addEventListener('click', function() {
+    filterQuotes();
+    showRandomQuote();
+});
+exportQuotesButton.addEventListener('click', exportToJsonFile);
 
 // Load quotes from local storage on initialization
 loadQuotes();
@@ -251,10 +216,6 @@ filterQuotes();
 setInterval(syncData, SYNC_INTERVAL);
 
 
-
-
-
-   
                    
     
 
