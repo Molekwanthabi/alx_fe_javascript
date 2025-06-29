@@ -23,6 +23,9 @@
 
   <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)">
   <button onclick="exportToJsonFile()">Export Quotes to JSON</button>
+  <div id="serverStatus" style="margin-top:10px; font-style: italic; color: gray;"></div>
+  <button onclick="syncWithServer()">Sync Quotes from Server</button>
+
 
   <script src="script.js"></script>
 </body>
