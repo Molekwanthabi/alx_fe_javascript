@@ -145,8 +145,10 @@ function fetchQuotesFromServer() {
       }));
     });
 }
-
 function syncWithServer() {
+  const serverStatus = document.getElementById("serverStatus");
+  serverStatus.textContent = "Connecting to server...";
+
   fetchQuotesFromServer()
     .then(serverQuotes => {
       const combinedQuotes = [...quotes, ...serverQuotes.filter(sq =>
@@ -157,14 +159,19 @@ function syncWithServer() {
         quotes = combinedQuotes;
         saveQuotes();
         populateCategories();
-        alert("Quotes synced from server!");
+        serverStatus.textContent = "Quotes synced successfully!";
+        setTimeout(() => { serverStatus.textContent = ""; }, 3000);
+      } else {
+        serverStatus.textContent = "No new quotes found on server.";
+        setTimeout(() => { serverStatus.textContent = ""; }, 3000);
       }
     })
-    .catch(err => console.error("Failed to sync with server.", err));
+    .catch(err => {
+      console.error("Failed to sync with server.", err);
+      serverStatus.textContent = "Failed to connect to server.";
+      setTimeout(() => { serverStatus.textContent = ""; }, 3000);
+    });
 }
 
-
-// Periodic sync every 1 minute
-setInterval(syncWithServer, 60000);
 
  
