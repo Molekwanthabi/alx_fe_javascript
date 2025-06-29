@@ -135,6 +135,34 @@ const lastQuote = sessionStorage.getItem("lastQuote");
 if (lastQuote) {
   quoteDisplay.textContent = lastQuote;
 }
+function fetchQuotesFromServer() {
+  return fetch("https://jsonplaceholder.typicode.com/posts")
+    .then(response => response.json())
+    .then(serverData => {
+      return serverData.slice(0, 5).map(post => ({
+        text: post.title,
+        category: "Server"
+      }));
+    });
+}
+
+function syncWithServer() {
+  fetchQuotesFromServer()
+    .then(serverQuotes => {
+      const combinedQuotes = [...quotes, ...serverQuotes.filter(sq =>
+        !quotes.some(q => q.text === sq.text)
+      )];
+
+      if (combinedQuotes.length !== quotes.length) {
+        quotes = combinedQuotes;
+        saveQuotes();
+        populateCategories();
+        alert("Quotes synced from server!");
+      }
+    })
+    .catch(err => console.error("Failed to sync with server.", err));
+}
+
 
 // Periodic sync every 1 minute
 setInterval(syncWithServer, 60000);
